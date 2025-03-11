@@ -1,0 +1,28 @@
+{
+  "name": "belajar-headless-cms",
+  "type": "commonjs",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start:dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.13.0",
+    "nanoid": "^3.3.9",
+    "sequelize": "^6.37.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "sequelize-cli": "^6.6.2"
+  }
+}
