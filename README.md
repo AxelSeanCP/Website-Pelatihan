@@ -87,7 +87,7 @@ npm start
   "status": "success",
   "message": "User created",
   "data": {
-    "user-1234"
+    "userId": "user-1234"
   }
 }
 ```
@@ -103,7 +103,7 @@ npm start
   "status": "success",
   "data": {
     "user": {
-      "id": 1,
+      "id": "user-1234",
       "name": "Axel Sean CP",
       "username": "Axel",
       "email": "axel@gmail.com"
@@ -197,6 +197,72 @@ npm start
 ```json
 {
   "Authorization": "Bearer <your-access-token>"
+}
+```
+
+#### **Add Enrollment**
+
+**Endpoint:** `POST /api/enrollments`
+
+**Request Body:**
+
+```json
+{
+  "courseId": "course-12345"
+}
+// input courseId from wordpress
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "User enrolled"
+}
+```
+
+#### **Get Enrollments**
+
+> returns enrollments from current user
+
+**Endpoint:** `GET /api/enrollments`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    [
+      "id": "enrollment-1234",
+      "userId": "user-1234",
+      "courseId": "course-1234",
+    ]
+  }
+}
+```
+
+#### **Delete Enrollment**
+
+> returns enrollments from current user
+
+**Endpoint:** `DELETE /api/enrollments`
+
+**Request Body:**
+
+```json
+{
+  "courseId": "course-1234"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Enrollments deleted"
 }
 ```
 

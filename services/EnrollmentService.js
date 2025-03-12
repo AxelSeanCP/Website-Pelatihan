@@ -1,13 +1,16 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const { nanoid } = require("nanoid");
-const { BadRequestError, NotFoundError } = require("../exceptions");
-const { mapEnrollmentsToModel } = require("../utils/mapTableToModel");
+const {
+  BadRequestError,
+  NotFoundError,
+  ForbiddenError,
+} = require("../exceptions");
 
 const verifyEnrollment = async ({ userId, courseId }) => {
   const enrollment = await db.Enrollment.findOne({
     where: {
-      [Op.and]: [{ user_id: userId }, { course_id: courseId }],
+      [Op.and]: [{ userId }, { courseId }],
     },
   });
 
@@ -21,11 +24,16 @@ const createEnrollment = async ({ id: userId, courseId }) => {
 
   const id = `enrollment-${nanoid(16)}`;
 
-  await db.Enrollment.create({ id, userId, courseId });
+  const { id: enrollmentId } = await db.Enrollment.create({
+    id,
+    userId,
+    courseId,
+  });
+
+  return enrollmentId;
 };
 
 const getEnrollments = async (userId) => {
-  //buat userId optional
   const enrollments = await db.Enrollment.findAll({
     where: {
       userId,
@@ -36,7 +44,34 @@ const getEnrollments = async (userId) => {
     throw new NotFoundError("No enrollments found");
   }
 
-  return { enrollments: enrollments.map(mapEnrollmentsToModel) };
+  return { enrollments };
 };
 
-module.exports = { createEnrollment, getEnrollments };
+const deleteEnrollment = async ({ userId, courseId }) => {
+  await db.Enrollment.destroy({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+};
+
+const verifyEnrollmentAccess = async ({ userId, courseId }) => {
+  const enrollment = await db.Enrollment.findOne({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+
+  if (!enrollment) {
+    throw new ForbiddenError("You don't have access to this resource");
+  }
+};
+
+module.exports = {
+  createEnrollment,
+  getEnrollments,
+  deleteEnrollment,
+  verifyEnrollmentAccess,
+};
