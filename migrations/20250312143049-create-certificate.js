@@ -7,12 +7,15 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
       },
       userId: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       courseId: {
+        type: Sequelize.STRING,
+      },
+      courseName: {
         type: Sequelize.STRING,
       },
       pdfUrl: {
