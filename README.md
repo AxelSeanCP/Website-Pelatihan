@@ -268,6 +268,103 @@ npm start
 
 ---
 
+### **4. Certificates**
+
+#### **Create Certificate**
+
+**Endpoint:** `POST /api/certificates`
+
+**Request Body:**
+
+```json
+{
+  "userId": "user-1234",
+  "courseId": "course-1234",
+  "courseName": "Learn JavaScript"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "certificates": {
+      "id": "certificateId",
+      "userId": "user-1234",
+      "courseId": "course-1234",
+      "courseName": "Learn JavaScript",
+      "pdfUrl": "/certificates/{certificateId}.pdf"
+    }
+  }
+}
+```
+
+#### **Get All Certificates**
+
+**Endpoint:** `GET /api/certificates`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "certificates": [
+      {
+        "id": "certificateId",
+        "userId": "user-1234",
+        "courseId": "course-1234",
+        "courseName": "Learn JavaScript",
+        "pdfUrl": "/certificates/{certificateId}.pdf",
+        "user": {
+          "name": "Axel Sean CP"
+        }
+      },
+      ...
+    ]
+  }
+}
+```
+
+#### **Verify Certificate**
+
+**Endpoint:** `GET /api/certificates/{certificateId}/verify`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "certificates": {
+      "id": "certificateId",
+      "userId": "user-1234",
+      "courseId": "course-1234",
+      "courseName": "Learn JavaScript",
+      "pdfUrl": "/certificates/{certificateId}.pdf",
+      "user": {
+        "name": "Axel Sean CP"
+      }
+    }
+  }
+}
+```
+
+#### **Delete Certificate**
+
+**Endpoint:** `DELETE /api/certificates/{certificateId}`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Certificate deleted"
+}
+```
+
 ### Notes:
 
 - Ensure you provide a valid JWT token for protected routes.
