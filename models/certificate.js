@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Certificate.belongsTo(models.User, {
         foreignKey: "userId",
-        as: "certificates",
+        as: "user",
       });
     }
   }

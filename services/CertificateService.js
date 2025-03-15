@@ -1,7 +1,7 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
-const { puppeteer } = require("puppeteer");
+const puppeteer = require("puppeteer");
 const QRCode = require("qrcode");
 const path = require("path");
 const fs = require("fs");
@@ -19,7 +19,7 @@ const checkCertificateExists = async ({ userId, courseId }) => {
   }
 };
 
-const add = async ({ userId, courseId, courseName }) => {
+const createCertificate = async ({ userId, courseId, courseName }) => {
   await checkCertificateExists({ userId, courseId });
 
   const user = await db.User.findByPk(userId);
@@ -30,8 +30,8 @@ const add = async ({ userId, courseId, courseName }) => {
 
   const qrCodeDir = path.join(__dirname, "../public/qrcodes");
   const pdfDir = path.join(__dirname, "../public/certificates");
-  if (!fs.existsSync(qrCodeDir)) fs.mkdir(qrCodeDir, { recursive: true });
-  if (!fs.existsSync(pdfDir)) fs.mkdir(pdfDir, { recursive: true });
+  if (!fs.existsSync(qrCodeDir)) fs.mkdirSync(qrCodeDir, { recursive: true });
+  if (!fs.existsSync(pdfDir)) fs.mkdirSync(pdfDir, { recursive: true });
 
   const qrCodePath = path.join(qrCodeDir, `${certificateId}.png`);
   await QRCode.toFile(qrCodePath, verificationUrl);
@@ -72,9 +72,9 @@ const add = async ({ userId, courseId, courseName }) => {
   return certificate;
 };
 
-const getById = async (id) => {
+const getCertificate = async (id) => {
   const certificate = await db.Certificate.findByPk(id, {
-    include: [{ model: db.User, as: "users", attributes: ["name"] }],
+    include: [{ model: db.User, as: "user", attributes: ["name"] }],
   });
 
   if (!certificate) {
@@ -84,7 +84,37 @@ const getById = async (id) => {
   return certificate;
 };
 
+const getCertificates = async () => {
+  const certificates = await db.Certificate.findAll({
+    include: [{ model: db.User, as: "user", attributes: ["name"] }],
+  });
+
+  if (certificates.length === 0) {
+    throw new NotFoundError("No certificates found");
+  }
+
+  return { certificates };
+};
+
+const removeCertificate = async (id) => {
+  const certificate = await db.Certificate.findByPk(id);
+
+  if (!certificate) {
+    throw new NotFoundError("Certificate not found");
+  }
+
+  const pdfPath = path.join(__dirname, `../public/certificates/${id}.pdf`);
+  const qrCodePath = path.join(__dirname, `../public/qrcodes/${id}.png`);
+
+  if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+  if (fs.existsSync(qrCodePath)) fs.unlinkSync(qrCodePath);
+
+  await certificate.destroy();
+};
+
 module.exports = {
-  add,
-  getById,
+  createCertificate,
+  getCertificate,
+  getCertificates,
+  removeCertificate,
 };
